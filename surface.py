@@ -10,6 +10,7 @@ class Surface:
         self.__draw_window()
         self.__init_field()
         self.__draw_field()
+        self.__draw_grid()
         self.__update_display()
 
     def __draw_window(self):
@@ -35,9 +36,14 @@ class Surface:
 
     def __draw_grid(self):
         for i in range(len(self.field)):
-            pygame.draw.line(self.window)
-            for j in range(len(self.field[i])):
+            vert_line_start = (TOP_LEFT_X, TOP_LEFT_Y + i * BLOCK_SIZE)
+            vert_line_end = (TOP_LEFT_X + FIELD_WIDTH, TOP_LEFT_Y + i * BLOCK_SIZE)
+            pygame.draw.line(self.window, Color.GREY.value, vert_line_start, vert_line_end)
 
+        for j in range(len(self.field[0])):
+            hor_line_start = (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y)
+            hor_line_end = (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + FIELD_HEIGHT)
+            pygame.draw.line(self.window, Color.GREY.value, hor_line_start, hor_line_end)
 
     @staticmethod
     def __update_display():
