@@ -78,6 +78,9 @@ class Surface:
             if (cell_num, row_num) in self.locked_positions:
                 self.field[row_num][cell_num] = self.locked_positions[(cell_num, row_num)]
 
+    def clear_rows(self):
+        pass
+
     @property
     def is_overfilled(self):
         for (x, y) in self.locked_positions:

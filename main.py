@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
         if change_piece:
             surface.lock_piece(game.current_piece)
-            # surface.clear_rows()
+            surface.clear_rows()
             game.change_piece()
             change_piece = False
 
