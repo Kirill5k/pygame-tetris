@@ -56,7 +56,7 @@ class Surface:
         self.__draw_grid()
         self.__update_display()
 
-    def is_valid_position(self, piece: Piece):
+    def is_valid_pos(self, piece: Piece):
         accepted_positions = [pos for pos in self.all_positions if self.field[pos[1]][pos[0]] == Color.BLACK.value]
         for pos in piece.shape_positions:
             if pos not in accepted_positions and pos[1] > -1:
@@ -79,7 +79,7 @@ class Surface:
                 self.field[row_num][cell_num] = self.locked_positions[(cell_num, row_num)]
 
     @property
-    def is_game_over(self):
+    def is_overfilled(self):
         for (x, y) in self.locked_positions:
             if y < 1:
                 return True

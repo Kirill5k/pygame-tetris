@@ -3,12 +3,14 @@ from content.shape import Shape
 
 
 class Piece:
-    POS_OFFSET_X = 0 # 2
-    POS_OFFSET_Y = 0 # 4
+    POS_OFFSET_X = 2
+    POS_OFFSET_Y = 3
 
     def __init__(self, x, y, shape: Shape):
         self.x = x
         self.y = y
+        self.next_x = x
+        self.next_y = y
         self.shape = shape
         self.rotation = 0
 
@@ -32,7 +34,7 @@ class Piece:
         self.rotation += 1
 
     def rotate_back(self):
-        self.rotation += 1
+        self.rotation -= 1
 
     @property
     def is_moving(self):
