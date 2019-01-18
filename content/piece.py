@@ -45,7 +45,7 @@ class Piece:
     def perform_action(self):
         self.prev_x = self.x
         self.prev_y = self.y
-        self.prev_rotation = self.prev_rotation
+        self.prev_rotation = self.rotation
 
     @property
     def is_in_the_field(self):

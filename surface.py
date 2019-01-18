@@ -1,16 +1,16 @@
 import pygame
 from content.color import Color
 from content.piece import Piece
-from utils.iterators import field_cell_iterator
+from utils.field import create_empty_row, grid_iterator
 from config import *
 
 
 class Surface:
     def __init__(self, window):
         self.window = window
-        self.height = int(FIELD_HEIGHT / BLOCK_SIZE)
-        self.width = int(FIELD_WIDTH / BLOCK_SIZE)
-        self.all_positions = [(j, i) for j in range(self.width) for i in range(self.height)]
+        self.rows_count = int(FIELD_HEIGHT / BLOCK_SIZE)
+        self.columns_count = int(FIELD_WIDTH / BLOCK_SIZE)
+        self.all_positions = [(col, row) for row, col in grid_iterator(self.rows_count, self.columns_count)]
         self.locked_positions = {}
         self.__draw_window()
         self.__init_field()
@@ -26,10 +26,10 @@ class Surface:
         self.window.blit(label, (TOP_LEFT_X + FIELD_WIDTH / 2 - label.get_width() / 2, BLOCK_SIZE))
 
     def __init_field(self):
-        self.field = [[Color.BLACK.value for _ in range(self.width)] for _ in range(self.height)]
+        self.field = [create_empty_row(self.columns_count) for _ in range(self.rows_count)]
 
     def __draw_field(self):
-        for row_num, cell_num in field_cell_iterator(self.field):
+        for row_num, cell_num in grid_iterator(self.rows_count, self.columns_count):
             x = TOP_LEFT_X + cell_num * BLOCK_SIZE
             y = TOP_LEFT_Y + row_num * BLOCK_SIZE
             pygame.draw.rect(self.window, self.field[row_num][cell_num], (x, y, BLOCK_SIZE, BLOCK_SIZE), 0)
@@ -37,14 +37,14 @@ class Surface:
         pygame.draw.rect(self.window, Color.RED.value, (TOP_LEFT_X, TOP_LEFT_Y, FIELD_WIDTH, FIELD_HEIGHT), BORDER_SIZE)
 
     def __draw_grid(self):
-        for i in range(len(self.field)):
-            hor_line_start = (TOP_LEFT_X, TOP_LEFT_Y + i * BLOCK_SIZE)
-            hor_line_end = (TOP_LEFT_X + FIELD_WIDTH, TOP_LEFT_Y + i * BLOCK_SIZE)
+        for row_num in range(self.rows_count):
+            hor_line_start = (TOP_LEFT_X, TOP_LEFT_Y + row_num * BLOCK_SIZE)
+            hor_line_end = (TOP_LEFT_X + FIELD_WIDTH, TOP_LEFT_Y + row_num * BLOCK_SIZE)
             pygame.draw.line(self.window, Color.GREY.value, hor_line_start, hor_line_end)
 
-        for j in range(len(self.field[0])):
-            vert_line_start = (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y)
-            vert_line_end = (TOP_LEFT_X + j * BLOCK_SIZE, TOP_LEFT_Y + FIELD_HEIGHT)
+        for cell_num in range(self.columns_count):
+            vert_line_start = (TOP_LEFT_X + cell_num * BLOCK_SIZE, TOP_LEFT_Y)
+            vert_line_end = (TOP_LEFT_X + cell_num * BLOCK_SIZE, TOP_LEFT_Y + FIELD_HEIGHT)
             pygame.draw.line(self.window, Color.GREY.value, vert_line_start, vert_line_end)
 
     @staticmethod
@@ -74,7 +74,7 @@ class Surface:
 
     def clear_moving_pieces(self):
         self.__init_field()
-        for row_num, cell_num in field_cell_iterator(self.field):
+        for row_num, cell_num in grid_iterator(self.rows_count, self.columns_count):
             if (cell_num, row_num) in self.locked_positions:
                 self.field[row_num][cell_num] = self.locked_positions[(cell_num, row_num)]
 

@@ -1,9 +1,9 @@
 import pygame
 from setup import game, surface
 
-arrow_keys = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_UP]
+actions_keys = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_UP]
 
-arrow_keys_actions_map = {
+action_keys_actions_map = {
     pygame.K_LEFT: lambda piece: piece.move_left(),
     pygame.K_RIGHT: lambda piece: piece.move_right(),
     pygame.K_DOWN: lambda piece: piece.move_down(),
@@ -41,8 +41,8 @@ if __name__ == '__main__':
         for event in game.key_events():
             if event.key == pygame.K_ESCAPE:
                 game.quit()
-            if event.key in arrow_keys:
-                arrow_keys_actions_map[event.key](game.current_piece)
+            if event.key in actions_keys:
+                action_keys_actions_map[event.key](game.current_piece)
                 if surface.is_valid_pos(game.current_piece):
                     game.current_piece.perform_action()
                 else:
@@ -53,6 +53,7 @@ if __name__ == '__main__':
 
         if change_piece:
             surface.lock_piece(game.current_piece)
+            # surface.clear_rows()
             game.change_piece()
             change_piece = False
 

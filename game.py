@@ -41,4 +41,5 @@ class Game:
     @staticmethod
     def quit():
         pygame.display.quit()
+        pygame.quit()
 
