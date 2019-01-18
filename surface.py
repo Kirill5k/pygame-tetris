@@ -1,7 +1,7 @@
 import pygame
 from content.color import Color
 from content.piece import Piece
-from utils.field import create_empty_row, grid_iterator
+from utils.grid import create_empty_row, grid_iterator
 from config import *
 
 
