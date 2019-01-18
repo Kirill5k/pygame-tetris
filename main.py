@@ -15,17 +15,9 @@ def draw_text_middle(text, size, color, surface):
     pass
 
 
-def clear_rows(grid, locked):
-    pass
-
-
-def draw_next_shape(shape, surface):
-    pass
-
-
 if __name__ == '__main__':
     change_piece = False
-    surface.draw_next(game.next_piece)
+    surface.draw_next_piece(game.next_piece)
 
     while game.is_running:
         game.clock_tick()
@@ -57,7 +49,7 @@ if __name__ == '__main__':
             surface.clear_rows()
             game.change_piece()
             change_piece = False
-            surface.draw_next(game.next_piece)
+            surface.draw_next_piece(game.next_piece)
 
         surface.clear_moving_pieces()
 

@@ -18,7 +18,7 @@ class Surface:
         self.all_positions = [(col, row) for row, col in grid_iterator(self.rows_count, self.columns_count)]
         self.field = create_empty_rows(self.columns_count, self.rows_count)
         self.locked_positions = {}
-        self.__init_next_shape()
+        self.__init_next_shape_area()
         self.__draw_window()
         self.update()
 
@@ -27,7 +27,7 @@ class Surface:
         label = create_label(Text.TITLE)
         self.window.blit(label, (TOP_LEFT_X + FIELD_WIDTH / 2 - label.get_width() / 2, BLOCK_SIZE))
 
-    def __init_next_shape(self):
+    def __init_next_shape_area(self):
         self.next_shape_x = TOP_LEFT_X + FIELD_WIDTH + BLOCK_SIZE * 2
         self.next_shape_y = TOP_LEFT_Y + int(FIELD_HEIGHT / 4)
         self.next_shape_rect = pygame.Rect(self.next_shape_x, self.next_shape_y, BLOCK_SIZE * 5, BLOCK_SIZE * 4)
@@ -80,16 +80,16 @@ class Surface:
 
     def clear_rows(self):
         new_field = list(filter(lambda row: Color.BLACK in row, self.field))
-        if len(new_field) != len(self.field):
+        if len(new_field) is not len(self.field):
             deleted_rows_count = len(self.field) - len(new_field)
             self.field = create_empty_rows(self.columns_count, deleted_rows_count) + new_field
             self.locked_positions = {}
             for row_num, cell_num in grid_iterator(self.rows_count, self.columns_count):
-                if self.field[row_num][cell_num] != Color.BLACK:
+                if self.field[row_num][cell_num] is not Color.BLACK:
                     self.locked_positions[(cell_num, row_num)] = self.field[row_num][cell_num]
 
-    def draw_next(self, piece: Piece):
-        label = create_label(Text.NEXT_SHAPE, size=FONT_SIZE / 2)
+    def draw_next_piece(self, piece: Piece):
+        label = create_label(Text.NEXT_SHAPE, size=FONT_SIZE/2)
         self.window.blit(label, (self.next_shape_x + BLOCK_SIZE / 3, self.next_shape_y - BLOCK_SIZE * 1.5))
         self.window.fill(Color.BLACK, self.next_shape_rect)
         for cell_num, row_num in piece.shape_iterator():
