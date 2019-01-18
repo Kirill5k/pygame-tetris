@@ -9,10 +9,11 @@ class Piece:
     def __init__(self, x, y, shape: Shape):
         self.x = x
         self.y = y
-        self.next_x = x
-        self.next_y = y
         self.shape = shape
         self.rotation = 0
+        self.prev_x = x
+        self.prev_y = y
+        self.prev_rotation = 0
 
     @classmethod
     def get_random(cls, x=5, y=0):
@@ -36,8 +37,18 @@ class Piece:
     def rotate_back(self):
         self.rotation -= 1
 
+    def undo_action(self):
+        self.x = self.prev_x
+        self.y = self.prev_y
+        self.rotation = self.prev_rotation
+
+    def perform_action(self):
+        self.prev_x = self.x
+        self.prev_y = self.y
+        self.prev_rotation = self.prev_rotation
+
     @property
-    def is_moving(self):
+    def is_in_the_field(self):
         return self.y > 0
 
     @property

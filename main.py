@@ -1,6 +1,15 @@
 import pygame
 from setup import game, surface
 
+arrow_keys = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_UP]
+
+arrow_keys_actions_map = {
+    pygame.K_LEFT: lambda piece: piece.move_left(),
+    pygame.K_RIGHT: lambda piece: piece.move_right(),
+    pygame.K_DOWN: lambda piece: piece.move_down(),
+    pygame.K_UP: lambda piece: piece.rotate()
+}
+
 
 def draw_text_middle(text, size, color, surface):
     pass
@@ -23,29 +32,21 @@ if __name__ == '__main__':
         if game.cycle_has_passed:
             game.reset_time()
             game.current_piece.move_down()
-            if not surface.is_valid_pos(game.current_piece) and game.current_piece.is_moving:
-                game.current_piece.move_up()
+            if not surface.is_valid_pos(game.current_piece) and game.current_piece.is_in_the_field:
+                game.current_piece.undo_action()
                 change_piece = True
+            else:
+                game.current_piece.perform_action()
 
         for event in game.key_events():
             if event.key == pygame.K_ESCAPE:
                 game.quit()
-            if event.key == pygame.K_LEFT:
-                game.current_piece.move_left()
-                if not surface.is_valid_pos(game.current_piece):
-                    game.current_piece.move_right()
-            if event.key == pygame.K_RIGHT:
-                game.current_piece.move_right()
-                if not surface.is_valid_pos(game.current_piece):
-                    game.current_piece.move_left()
-            if event.key == pygame.K_DOWN:
-                game.current_piece.move_down()
-                if not surface.is_valid_pos(game.current_piece):
-                    game.current_piece.move_up()
-            if event.key == pygame.K_UP:
-                game.current_piece.rotate()
-                if not surface.is_valid_pos(game.current_piece):
-                    game.current_piece.rotate_back()
+            if event.key in arrow_keys:
+                arrow_keys_actions_map[event.key](game.current_piece)
+                if surface.is_valid_pos(game.current_piece):
+                    game.current_piece.perform_action()
+                else:
+                    game.current_piece.undo_action()
 
         surface.add_piece(game.current_piece)
         surface.update()
