@@ -72,7 +72,7 @@ class Surface:
         for pos in piece.shape_positions:
             self.locked_positions[pos] = piece.shape.color
 
-    def update_locked_positions(self):
+    def clear_moving_pieces(self):
         self.__init_field()
         for row_num, cell_num in field_cell_iterator(self.field):
             if (cell_num, row_num) in self.locked_positions:

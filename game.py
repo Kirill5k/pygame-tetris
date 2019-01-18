@@ -60,6 +60,7 @@ def main(surface):
                         current_piece.rotate_back()
 
         surface.add_piece(current_piece)
+        surface.update()
 
         if change_piece:
             surface.lock_piece(current_piece)
@@ -67,8 +68,7 @@ def main(surface):
             next_piece = Piece.get_random()
             change_piece = False
 
-        surface.update()
-        surface.update_locked_positions()
+        surface.clear_moving_pieces()
 
     if surface.is_game_over:
             quit_game()
