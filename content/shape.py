@@ -1,3 +1,4 @@
+from content.color import Color
 from enum import Enum
 
 
@@ -12,7 +13,7 @@ class Shape(Enum):
            '..00.',
            '...0.',
            '.....']],
-         (0, 255, 0))
+         Color.LIME.value)
 
     Z = ([['.....',
            '.....',
@@ -24,7 +25,7 @@ class Shape(Enum):
            '.00..',
            '.0...',
            '.....']],
-         (255, 0, 0))
+         Color.RED.value)
 
     I = ([['..0..',
            '..0..',
@@ -36,14 +37,14 @@ class Shape(Enum):
            '.....',
            '.....',
            '.....']],
-         (0, 255, 255))
+         Color.CYAN.value)
 
     O = ([['.....',
            '.....',
            '.00..',
            '.00..',
            '.....']],
-         (255, 255, 0))
+         Color.YELLOW.value)
 
     J = ([['.....',
            '.0...',
@@ -65,7 +66,7 @@ class Shape(Enum):
            '..0..',
            '.00..',
            '.....']],
-         (255, 165, 0))
+         Color.ORANGE.value)
 
     L = ([['.....',
            '...0.',
@@ -87,7 +88,7 @@ class Shape(Enum):
            '..0..',
            '..0..',
            '.....']],
-         (0, 0, 255))
+         Color.BLUE.value)
 
     T = ([['.....',
            '..0..',
@@ -109,7 +110,7 @@ class Shape(Enum):
            '.00..',
            '..0..',
            '.....']],
-         (128, 0, 128))
+         Color.PURPLE.value)
 
     def __init__(self, rotations, color):
         self.rotations = rotations
