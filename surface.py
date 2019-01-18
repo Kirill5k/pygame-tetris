@@ -1,6 +1,6 @@
 import pygame
 from content import Text, Color, Piece
-from utils.grid import create_empty_row, grid_iterator
+from utils.grid import create_empty_rows, grid_iterator
 from config import *
 
 
@@ -10,26 +10,22 @@ def create_label(text, size=FONT_SIZE, color=Color.WHITE):
 
 
 class Surface:
+    rows_count = int(FIELD_HEIGHT / BLOCK_SIZE)
+    columns_count = int(FIELD_WIDTH / BLOCK_SIZE)
+
     def __init__(self, window):
         self.window = window
-        self.rows_count = int(FIELD_HEIGHT / BLOCK_SIZE)
-        self.columns_count = int(FIELD_WIDTH / BLOCK_SIZE)
         self.all_positions = [(col, row) for row, col in grid_iterator(self.rows_count, self.columns_count)]
+        self.field = create_empty_rows(self.columns_count, self.rows_count)
         self.locked_positions = {}
-        self.__init_field()
         self.__init_next_shape()
         self.__draw_window()
-        self.__draw_field()
-        self.__draw_grid()
-        self.__update_display()
+        self.update()
 
     def __draw_window(self):
         self.window.fill(Color.BLACK)
         label = create_label(Text.TITLE)
         self.window.blit(label, (TOP_LEFT_X + FIELD_WIDTH / 2 - label.get_width() / 2, BLOCK_SIZE))
-
-    def __init_field(self):
-        self.field = [create_empty_row(self.columns_count) for _ in range(self.rows_count)]
 
     def __init_next_shape(self):
         self.next_shape_x = TOP_LEFT_X + FIELD_WIDTH + BLOCK_SIZE * 2
@@ -55,17 +51,13 @@ class Surface:
             vert_line_end = (TOP_LEFT_X + cell_num * BLOCK_SIZE, TOP_LEFT_Y + FIELD_HEIGHT)
             pygame.draw.line(self.window, Color.GREY, vert_line_start, vert_line_end)
 
-    @staticmethod
-    def __update_display():
-        pygame.display.update()
-
     def update(self):
         self.__draw_field()
         self.__draw_grid()
-        self.__update_display()
+        pygame.display.update()
 
     def is_valid_pos(self, piece: Piece):
-        accepted_positions = [pos for pos in self.all_positions if self.field[pos[1]][pos[0]] == Color.BLACK]
+        accepted_positions = [pos for pos in self.all_positions if self.field[pos[1]][pos[0]] is Color.BLACK]
         for pos in piece.shape_positions:
             if pos not in accepted_positions and pos[1] > -1:
                 return False
@@ -81,7 +73,7 @@ class Surface:
             self.locked_positions[pos] = piece.shape.color
 
     def clear_moving_pieces(self):
-        self.__init_field()
+        self.field = create_empty_rows(self.columns_count, self.rows_count)
         for row_num, cell_num in grid_iterator(self.rows_count, self.columns_count):
             if (cell_num, row_num) in self.locked_positions:
                 self.field[row_num][cell_num] = self.locked_positions[(cell_num, row_num)]
@@ -90,7 +82,7 @@ class Surface:
         new_field = list(filter(lambda row: Color.BLACK in row, self.field))
         if len(new_field) != len(self.field):
             deleted_rows_count = len(self.field) - len(new_field)
-            self.field = [create_empty_row(self.columns_count)] * deleted_rows_count + new_field
+            self.field = create_empty_rows(self.columns_count, deleted_rows_count) + new_field
             self.locked_positions = {}
             for row_num, cell_num in grid_iterator(self.rows_count, self.columns_count):
                 if self.field[row_num][cell_num] != Color.BLACK:
