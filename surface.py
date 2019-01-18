@@ -1,7 +1,5 @@
 import pygame
-from content.text import Text
-from content.color import Color
-from content.piece import Piece
+from content import Text, Color, Piece
 from utils.grid import create_empty_row, grid_iterator
 from config import *
 
@@ -89,7 +87,14 @@ class Surface:
                 self.field[row_num][cell_num] = self.locked_positions[(cell_num, row_num)]
 
     def clear_rows(self):
-        pass
+        new_field = list(filter(lambda row: Color.BLACK in row, self.field))
+        if len(new_field) != len(self.field):
+            deleted_rows_count = len(self.field) - len(new_field)
+            self.field = [create_empty_row(self.columns_count)] * deleted_rows_count + new_field
+            self.locked_positions = {}
+            for row_num, cell_num in grid_iterator(self.rows_count, self.columns_count):
+                if self.field[row_num][cell_num] != Color.BLACK:
+                    self.locked_positions[(cell_num, row_num)] = self.field[row_num][cell_num]
 
     def draw_next(self, piece: Piece):
         label = create_label(Text.NEXT_SHAPE, size=FONT_SIZE / 2)
