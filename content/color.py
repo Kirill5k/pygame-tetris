@@ -1,7 +1,4 @@
-from enum import Enum
-
-
-class Color(Enum):
+class Color:
     BLACK = (0, 0, 0)
     GREY = (128, 128, 128)
     WHITE = (255, 255, 255)

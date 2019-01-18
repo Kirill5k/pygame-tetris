@@ -13,7 +13,7 @@ class Shape(Enum):
            '..00.',
            '...0.',
            '.....']],
-         Color.LIME.value)
+         Color.LIME)
 
     Z = ([['.....',
            '.....',
@@ -25,7 +25,7 @@ class Shape(Enum):
            '.00..',
            '.0...',
            '.....']],
-         Color.RED.value)
+         Color.RED)
 
     I = ([['..0..',
            '..0..',
@@ -37,14 +37,14 @@ class Shape(Enum):
            '.....',
            '.....',
            '.....']],
-         Color.CYAN.value)
+         Color.CYAN)
 
     O = ([['.....',
            '.....',
            '.00..',
            '.00..',
            '.....']],
-         Color.YELLOW.value)
+         Color.YELLOW)
 
     J = ([['.....',
            '.0...',
@@ -66,7 +66,7 @@ class Shape(Enum):
            '..0..',
            '.00..',
            '.....']],
-         Color.ORANGE.value)
+         Color.ORANGE)
 
     L = ([['.....',
            '...0.',
@@ -88,7 +88,7 @@ class Shape(Enum):
            '..0..',
            '..0..',
            '.....']],
-         Color.BLUE.value)
+         Color.BLUE)
 
     T = ([['.....',
            '..0..',
@@ -110,7 +110,7 @@ class Shape(Enum):
            '.00..',
            '..0..',
            '.....']],
-         Color.PURPLE.value)
+         Color.PURPLE)
 
     def __init__(self, rotations, color):
         self.rotations = rotations

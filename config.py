@@ -1,5 +1,3 @@
-TITLE = 'Tetris'
-
 FONT_FAMILY = 'arial'
 FONT_SIZE = 60
 

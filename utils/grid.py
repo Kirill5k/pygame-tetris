@@ -2,7 +2,7 @@ from content.color import Color
 
 
 def create_empty_row(width):
-    return [Color.BLACK.value] * width
+    return [Color.BLACK] * width
 
 
 def grid_iterator(rows_count, columns_count):

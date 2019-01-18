@@ -57,13 +57,13 @@ class Piece:
 
     @property
     def shape_positions(self):
-        positions = []
-        for i, row in enumerate(self.current_form_of_shape):
-            for j, column in enumerate(list(row)):
-                if column == '0':
-                    positions.append(self.__get_position(j, i))
+        return [self.__get_position(cell_num, row_num) for cell_num, row_num in self.shape_iterator()]
 
-        return positions
+    def shape_iterator(self):
+        for row_num, row in enumerate(self.current_form_of_shape):
+            for cell_num, cell in enumerate(list(row)):
+                if cell == '0':
+                    yield cell_num, row_num
 
     def __get_position(self, j, i):
         return self.x + j - self.POS_OFFSET_X, self.y + i - self.POS_OFFSET_Y
