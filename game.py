@@ -1,12 +1,7 @@
 import pygame
 from content.piece import Piece
 from content.color import Color
-from setup import create_surface
-
-
-def convert_shape_format(piece):
-    positions = []
-    format = piece.shape[piece.rotation % len(piece.shape)]
+from setup import create_surface, quit_game
 
 
 def draw_text_middle(text, size, color, surface):
@@ -22,9 +17,8 @@ def draw_next_shape(shape, surface):
 
 
 def main(surface):
-    locked_positions = {}
-    current_piece = Piece.get_random(5, 0)
-    next_piece = Piece.get_random(5, 0)
+    current_piece = Piece.get_random()
+    next_piece = Piece.get_random()
     clock = pygame.time.Clock()
     fall_time = 0
     fall_speed = 0.27
@@ -32,10 +26,8 @@ def main(surface):
     change_piece = False
 
     while run:
-        surface.update_locked_positions()
         fall_time += clock.get_rawtime()
         clock.tick()
-
 
         if fall_time / 1000 > fall_speed:
             fall_time = 0
@@ -46,8 +38,10 @@ def main(surface):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                quit_game
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    quit_game()
                 if event.key == pygame.K_LEFT:
                     current_piece.move_left()
                     if not surface.is_valid_position(current_piece):
@@ -74,16 +68,15 @@ def main(surface):
             change_piece = False
 
         surface.update()
+        surface.update_locked_positions()
 
-        if surface.is_game_over:
-            run = False
-
-    pygame.display.quit()
+    if surface.is_game_over:
+            quit_game()
 
 
 def main_menu(surface):
     main(surface)
 
 
-surface = create_surface()
-main_menu(surface)  # start game
+game_surface = create_surface()
+main_menu(game_surface)  # start game

@@ -3,8 +3,8 @@ from content.shape import Shape
 
 
 class Piece:
-    POS_OFFSET_X = 2
-    POS_OFFSET_Y = 4
+    POS_OFFSET_X = 0 # 2
+    POS_OFFSET_Y = 0 # 4
 
     def __init__(self, x, y, shape: Shape):
         self.x = x
@@ -13,7 +13,7 @@ class Piece:
         self.rotation = 0
 
     @classmethod
-    def get_random(cls, x, y):
+    def get_random(cls, x=5, y=0):
         return Piece(x, y, choice(list(Shape)))
 
     def move_left(self):
@@ -25,7 +25,7 @@ class Piece:
     def move_down(self):
         self.y += 1
 
-    def move_down(self):
+    def move_up(self):
         self.y -= 1
 
     def rotate(self):

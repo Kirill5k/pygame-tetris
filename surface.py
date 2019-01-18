@@ -1,13 +1,17 @@
 import pygame
 from content.color import Color
 from content.piece import Piece
+from utils.iterators import field_cell_iterator
 from config import *
 
 
 class Surface:
-    def __init__(self):
-        self.window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-        pygame.display.set_caption(TITLE)
+    def __init__(self, window):
+        self.window = window
+        self.height = int(FIELD_HEIGHT / BLOCK_SIZE)
+        self.width = int(FIELD_WIDTH / BLOCK_SIZE)
+        self.all_positions = [(j, i) for j in range(self.width) for i in range(self.height)]
+        self.locked_positions = {}
         self.__draw_window()
         self.__init_field()
         self.__draw_field()
@@ -22,18 +26,13 @@ class Surface:
         self.window.blit(label, (TOP_LEFT_X + FIELD_WIDTH / 2 - label.get_width() / 2, BLOCK_SIZE))
 
     def __init_field(self):
-        self.height = int(FIELD_HEIGHT / BLOCK_SIZE)
-        self.width = int(FIELD_WIDTH / BLOCK_SIZE)
         self.field = [[Color.BLACK.value for _ in range(self.width)] for _ in range(self.height)]
-        self.all_positions = [(i, j) for j in range(self.width) for i in range(self.height)]
-        self.locked_positions = {}
 
     def __draw_field(self):
-        for i in range(len(self.field)):
-            for j in range(len(self.field[i])):
-                x = TOP_LEFT_X + j * BLOCK_SIZE
-                y = TOP_LEFT_Y + i * BLOCK_SIZE
-                pygame.draw.rect(self.window, self.field[i][j], (x, y, BLOCK_SIZE, BLOCK_SIZE), 0)
+        for row_num, cell_num in field_cell_iterator(self.field):
+            x = TOP_LEFT_X + cell_num * BLOCK_SIZE
+            y = TOP_LEFT_Y + row_num * BLOCK_SIZE
+            pygame.draw.rect(self.window, self.field[row_num][cell_num], (x, y, BLOCK_SIZE, BLOCK_SIZE), 0)
 
         pygame.draw.rect(self.window, Color.RED.value, (TOP_LEFT_X, TOP_LEFT_Y, FIELD_WIDTH, FIELD_HEIGHT), BORDER_SIZE)
 
@@ -58,7 +57,7 @@ class Surface:
         self.__update_display()
 
     def is_valid_position(self, piece: Piece):
-        accepted_positions = [pos for pos in self.all_positions if self.field[pos[0]][pos[1]] == Color.BLACK.value]
+        accepted_positions = [pos for pos in self.all_positions if self.field[pos[1]][pos[0]] == Color.BLACK.value]
         for pos in piece.shape_positions:
             if pos not in accepted_positions and pos[1] > -1:
                 return False
@@ -74,10 +73,10 @@ class Surface:
             self.locked_positions[pos] = piece.shape.color
 
     def update_locked_positions(self):
-        for i in range(len(self.field)):
-            for j in range(len(self.field[i])):
-                if (j, i) in self.locked_positions:
-                    self.field[i][j] = self.locked_positions[(j, i)]
+        self.__init_field()
+        for row_num, cell_num in field_cell_iterator(self.field):
+            if (cell_num, row_num) in self.locked_positions:
+                self.field[row_num][cell_num] = self.locked_positions[(cell_num, row_num)]
 
     @property
     def is_game_over(self):
