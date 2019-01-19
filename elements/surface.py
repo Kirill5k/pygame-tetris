@@ -1,5 +1,6 @@
 import pygame
-from content import Text, Color, Piece
+from content import Text, Color
+from elements import Piece
 from utils.grid import create_empty_rows, grid_iterator
 from config import *
 
@@ -12,25 +13,24 @@ def create_label(text, size=FONT_SIZE, color=Color.WHITE):
 class Surface:
     rows_count = int(FIELD_HEIGHT / BLOCK_SIZE)
     columns_count = int(FIELD_WIDTH / BLOCK_SIZE)
+    next_shape_x = TOP_LEFT_X + FIELD_WIDTH + BLOCK_SIZE * 2
+    next_shape_y = TOP_LEFT_Y + int(FIELD_HEIGHT / 4)
 
     def __init__(self, window):
         self.window = window
         self.all_positions = [(col, row) for row, col in grid_iterator(self.rows_count, self.columns_count)]
         self.field = create_empty_rows(self.columns_count, self.rows_count)
         self.locked_positions = {}
-        self.__init_next_shape_area()
-        self.__draw_window()
+        self.__draw_static_elements()
         self.update()
 
-    def __draw_window(self):
-        self.window.fill(Color.BLACK)
-        label = create_label(Text.TITLE)
-        self.window.blit(label, (TOP_LEFT_X + FIELD_WIDTH / 2 - label.get_width() / 2, BLOCK_SIZE))
+    def __draw_static_elements(self):
+        header_label = create_label(Text.TITLE)
+        self.window.blit(header_label, (TOP_LEFT_X + FIELD_WIDTH / 2 - header_label.get_width() / 2, BLOCK_SIZE))
 
-    def __init_next_shape_area(self):
-        self.next_shape_x = TOP_LEFT_X + FIELD_WIDTH + BLOCK_SIZE * 2
-        self.next_shape_y = TOP_LEFT_Y + int(FIELD_HEIGHT / 4)
         self.next_shape_rect = pygame.Rect(self.next_shape_x, self.next_shape_y, BLOCK_SIZE * 5, BLOCK_SIZE * 4)
+        next_shape_label = create_label(Text.NEXT_SHAPE, size=FONT_SIZE / 2)
+        self.window.blit(next_shape_label, (self.next_shape_x + BLOCK_SIZE / 3, self.next_shape_y - BLOCK_SIZE * 1.5))
 
     def __draw_field(self):
         for row_num, cell_num in grid_iterator(self.rows_count, self.columns_count):
@@ -87,15 +87,18 @@ class Surface:
             for row_num, cell_num in grid_iterator(self.rows_count, self.columns_count):
                 if self.field[row_num][cell_num] is not Color.BLACK:
                     self.locked_positions[(cell_num, row_num)] = self.field[row_num][cell_num]
+            return deleted_rows_count
+        return 0
 
     def draw_next_piece(self, piece: Piece):
-        label = create_label(Text.NEXT_SHAPE, size=FONT_SIZE/2)
-        self.window.blit(label, (self.next_shape_x + BLOCK_SIZE / 3, self.next_shape_y - BLOCK_SIZE * 1.5))
         self.window.fill(Color.BLACK, self.next_shape_rect)
         for cell_num, row_num in piece.shape_iterator():
             x = self.next_shape_x + cell_num * BLOCK_SIZE
             y = self.next_shape_y + row_num * BLOCK_SIZE
             pygame.draw.rect(self.window, piece.shape.color, (x, y, BLOCK_SIZE, BLOCK_SIZE), 0)
+
+    def update_score(self, new_score):
+        pass
 
     @property
     def is_overfilled(self):

@@ -1,5 +1,5 @@
 import pygame
-from content.piece import Piece
+from elements.piece import Piece
 
 
 class Game:
@@ -8,6 +8,7 @@ class Game:
     def __init__(self, starting_speed=0.27):
         self.clock = pygame.time.Clock()
         self.is_running = True
+        self.score = 0
         self.fall_time = 0
         self.fall_speed = starting_speed
         self.current_piece: Piece = Piece.get_random()
@@ -33,6 +34,9 @@ class Game:
 
     def stop(self):
         self.is_running = False
+
+    def add_score(self, cleared_rows_count):
+        self.score += cleared_rows_count * 10
 
     @property
     def cycle_has_passed(self):

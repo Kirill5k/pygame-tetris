@@ -46,10 +46,13 @@ if __name__ == '__main__':
 
         if change_piece:
             surface.lock_piece(game.current_piece)
-            surface.clear_rows()
             game.change_piece()
             change_piece = False
             surface.draw_next_piece(game.next_piece)
+            cleared_rows_count = surface.clear_rows()
+            if cleared_rows_count > 0:
+                game.add_score(cleared_rows_count)
+                surface.update_score(game.score)
 
         surface.clear_moving_pieces()
 
