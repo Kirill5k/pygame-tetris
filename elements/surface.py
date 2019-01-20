@@ -1,35 +1,33 @@
 import pygame
 from content import Text, Color
-from elements import Piece, NextPieceField, Grid
+from elements import Piece, ScoreField, NextPieceField, Grid
 from config import *
 
 
-def create_label(text, size=FONT_SIZE, color=Color.WHITE, font=FONT_FAMILY):
-    font = pygame.font.SysFont(font, int(size))
-    return font.render(text, 1, color)
-
-
 class Surface:
+    grid_top_x = (SCREEN_WIDTH - FIELD_WIDTH) // 2
+    grid_top_y = SCREEN_HEIGHT - FIELD_HEIGHT
+    add_fields_x = grid_top_x + FIELD_WIDTH + BLOCK_SIZE * 2
+    next_piece_y = grid_top_y + FIELD_HEIGHT // 4
+    score_field_y = grid_top_y + BLOCK_SIZE
+
     def __init__(self, window):
         self.window = window
 
-        grid_top_x = (SCREEN_WIDTH - FIELD_WIDTH) // 2
-        grid_top_y = SCREEN_HEIGHT - FIELD_HEIGHT
-
-        self.add_fields_x = grid_top_x + FIELD_WIDTH + BLOCK_SIZE * 2
-        self.next_piece_y = grid_top_y + int(FIELD_HEIGHT / 4)
-
         self.__draw_static_text()
-        self.grid = Grid(window, grid_top_x, grid_top_y, FIELD_WIDTH, FIELD_HEIGHT, BLOCK_SIZE, BORDER_SIZE)
+        self.grid = Grid(window, self.grid_top_x, self.grid_top_y, FIELD_WIDTH, FIELD_HEIGHT, BLOCK_SIZE, BORDER_SIZE)
         self.next_piece_field = NextPieceField(window, self.add_fields_x, self.next_piece_y, BLOCK_SIZE)
-        self.update()
+        self.score_field = ScoreField(window, self.add_fields_x, self.score_field_y, SECONDARY_FONT_FAMILY, SECONDARY_FONT_SIZE)
+
+    def __draw_label(self, text, x, y, font_size=SECONDARY_FONT_SIZE):
+        font = pygame.font.SysFont(FONT_FAMILY, font_size)
+        label = font.render(text, 1, Color.WHITE)
+        self.window.blit(label, (x, y))
 
     def __draw_static_text(self):
-        header_label = create_label(Text.TITLE)
-        self.window.blit(header_label, (SCREEN_WIDTH / 2 - header_label.get_width() / 2, BLOCK_SIZE))
-
-        next_shape_label = create_label(Text.NEXT_SHAPE, size=FONT_SIZE / 2)
-        self.window.blit(next_shape_label, (self.add_fields_x + BLOCK_SIZE / 3, self.next_piece_y - BLOCK_SIZE))
+        self.__draw_label(Text.TITLE, x=SCREEN_WIDTH//2 - BLOCK_SIZE * 2, y=BLOCK_SIZE, font_size=PRIMARY_FONT_SIZE)
+        self.__draw_label(Text.NEXT_SHAPE, x=self.add_fields_x, y=self.next_piece_y-BLOCK_SIZE)
+        self.__draw_label(Text.SCORE, x=self.add_fields_x, y=self.score_field_y-BLOCK_SIZE)
 
     def update(self):
         self.grid.update()
@@ -54,7 +52,7 @@ class Surface:
         self.next_piece_field.update(piece)
 
     def update_score(self, new_score):
-        pass
+        self.score_field.update(new_score)
 
     @property
     def is_overfilled(self):
