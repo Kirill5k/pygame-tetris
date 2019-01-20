@@ -19,9 +19,9 @@ class Surface:
         self.next_piece_field = NextPieceField(window, self.add_fields_x, self.next_piece_y, BLOCK_SIZE)
         self.score_field = ScoreField(window, self.add_fields_x, self.score_field_y, SECONDARY_FONT_FAMILY, SECONDARY_FONT_SIZE)
 
-    def __draw_label(self, text, x, y, font_size=SECONDARY_FONT_SIZE):
-        font = pygame.font.SysFont(FONT_FAMILY, font_size)
-        label = font.render(text, 1, Color.WHITE)
+    def __draw_label(self, text, x, y, font_family=FONT_FAMILY, font_size=SECONDARY_FONT_SIZE, color=Color.WHITE, bold=False):
+        font = pygame.font.SysFont(font_family, font_size, bold=bold)
+        label = font.render(text, 1, color)
         self.window.blit(label, (x, y))
 
     def __draw_static_text(self):
@@ -56,4 +56,12 @@ class Surface:
 
     @property
     def is_overfilled(self):
-        return self.grid.is_overfilled
+        is_overfilled = self.grid.is_overfilled
+        if is_overfilled:
+            self.__draw_label(Text.GAME_OVER, BLOCK_SIZE * 7, SCREEN_HEIGHT // 2 - BLOCK_SIZE,
+                              font_family=SECONDARY_FONT_FAMILY,
+                              bold=True,
+                              font_size=PRIMARY_FONT_SIZE,
+                              color=Color.YELLOW)
+            pygame.display.update()
+        return is_overfilled

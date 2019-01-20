@@ -1,5 +1,5 @@
 import pygame
-from setup import game, surface
+from setup import surface, game
 
 actions_keys = [pygame.K_LEFT, pygame.K_RIGHT, pygame.K_DOWN, pygame.K_UP]
 
@@ -9,10 +9,6 @@ action_keys_actions_map = {
     pygame.K_DOWN: lambda piece: piece.move_down(),
     pygame.K_UP: lambda piece: piece.rotate()
 }
-
-
-def draw_text_middle(text, size, color, surface):
-    pass
 
 
 if __name__ == '__main__':
