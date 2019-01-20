@@ -1,20 +1,21 @@
 import pygame
 from content import Text, Color
 from elements import Piece
+from elements.next import NextPieceField
 from utils.grid import create_empty_rows, grid_iterator
 from config import *
 
 
-def create_label(text, size=FONT_SIZE, color=Color.WHITE):
-    font = pygame.font.SysFont(FONT_FAMILY, int(size))
+def create_label(text, size=FONT_SIZE, color=Color.WHITE, font=FONT_FAMILY):
+    font = pygame.font.SysFont(font, int(size))
     return font.render(text, 1, color)
 
 
 class Surface:
     rows_count = int(FIELD_HEIGHT / BLOCK_SIZE)
     columns_count = int(FIELD_WIDTH / BLOCK_SIZE)
-    next_shape_x = TOP_LEFT_X + FIELD_WIDTH + BLOCK_SIZE * 2
-    next_shape_y = TOP_LEFT_Y + int(FIELD_HEIGHT / 4)
+    add_fields_x = TOP_LEFT_X + FIELD_WIDTH + BLOCK_SIZE * 2
+    next_piece_y = TOP_LEFT_Y + int(FIELD_HEIGHT / 4)
 
     def __init__(self, window):
         self.window = window
@@ -22,15 +23,15 @@ class Surface:
         self.field = create_empty_rows(self.columns_count, self.rows_count)
         self.locked_positions = {}
         self.__draw_static_elements()
+        self.next_piece_field = NextPieceField(window, self.add_fields_x, self.next_piece_y, BLOCK_SIZE)
         self.update()
 
     def __draw_static_elements(self):
         header_label = create_label(Text.TITLE)
         self.window.blit(header_label, (TOP_LEFT_X + FIELD_WIDTH / 2 - header_label.get_width() / 2, BLOCK_SIZE))
 
-        self.next_shape_rect = pygame.Rect(self.next_shape_x, self.next_shape_y, BLOCK_SIZE * 5, BLOCK_SIZE * 4)
         next_shape_label = create_label(Text.NEXT_SHAPE, size=FONT_SIZE / 2)
-        self.window.blit(next_shape_label, (self.next_shape_x + BLOCK_SIZE / 3, self.next_shape_y - BLOCK_SIZE * 1.5))
+        self.window.blit(next_shape_label, (self.add_fields_x + BLOCK_SIZE / 3, self.next_piece_y - BLOCK_SIZE))
 
     def __draw_field(self):
         for row_num, cell_num in grid_iterator(self.rows_count, self.columns_count):
@@ -91,11 +92,7 @@ class Surface:
         return 0
 
     def draw_next_piece(self, piece: Piece):
-        self.window.fill(Color.BLACK, self.next_shape_rect)
-        for cell_num, row_num in piece.shape_iterator():
-            x = self.next_shape_x + cell_num * BLOCK_SIZE
-            y = self.next_shape_y + row_num * BLOCK_SIZE
-            pygame.draw.rect(self.window, piece.shape.color, (x, y, BLOCK_SIZE, BLOCK_SIZE), 0)
+        self.next_piece_field.update(piece)
 
     def update_score(self, new_score):
         pass
